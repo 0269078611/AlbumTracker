@@ -7,8 +7,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Data
-@Getter
-@Setter
+
 public class UserDTO {
     private UUID id;
     private String username;

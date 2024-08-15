@@ -1,6 +1,7 @@
 package com.lucic.albumtracker.entity;
 import com.lucic.albumtracker.entity.enums.Role;
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,9 +10,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.List;
 @Entity
-@Getter
-@Setter
-@Table(name="user")
+@Data
+@Table(name="user_table")
 public class UserEntity {
     @Id
     @GeneratedValue
@@ -23,7 +23,7 @@ public class UserEntity {
     private String email;
     @Column
     private String password;
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ReviewEntity> review = new HashSet<>();
 
     @Column

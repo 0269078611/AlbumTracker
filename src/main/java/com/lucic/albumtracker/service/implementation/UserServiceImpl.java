@@ -4,12 +4,15 @@ import com.lucic.albumtracker.dto.UserDTO;
 import com.lucic.albumtracker.entity.UserEntity;
 import com.lucic.albumtracker.entity.enums.Role;
 import com.lucic.albumtracker.exception.SignUpException;
+import com.lucic.albumtracker.mapper.UserMapper;
 import com.lucic.albumtracker.repository.UserRepository;
 import com.lucic.albumtracker.service.UserService;
+import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +26,8 @@ import java.util.List;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Autowired
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -49,10 +52,8 @@ public class UserServiceImpl implements UserService {
             throw new SignUpException("Password is not strong enough");
         }
 
-        UserEntity userEntity = new UserEntity();
+        UserEntity userEntity = userMapper.userDTOToUser(user);
         userEntity.setRole(Role.USER);
-        userEntity.setUsername(user.getUsername());
-        userEntity.setEmail(user.getEmail());
         userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
 
         userRepository.save(userEntity);
@@ -63,21 +64,19 @@ public class UserServiceImpl implements UserService {
         return password.matches(passwordRegex);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Invalid username or password"));
-        return new org.springframework.security.core.userdetails.User(
-                user.getUsername(),
-                user.getPassword(),
-                getAuthorities(user)
-        );
+    @PostConstruct
+    public void loadData() {
+        if (userRepository.count() == 0) {
+            UserEntity user = new UserEntity();
+            user.setUsername("testuser");
+            user.setEmail("test@example.com");
+            user.setPassword(passwordEncoder.encode("testpassword"));
+            user.setRole(Role.USER);
+            userRepository.save(user);
+        }
     }
-    private Collection<? extends GrantedAuthority> getAuthorities(UserEntity user) {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().toString()));
-        return authorities;
-    }
+
+
 
 
 }

@@ -1,5 +1,6 @@
 package com.lucic.albumtracker.controller;
 import com.lucic.albumtracker.dto.UserDTO;
+import com.lucic.albumtracker.exception.SignUpException;
 import com.lucic.albumtracker.service.implementation.UserServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -28,10 +29,19 @@ public class AuthenticationController {
         return "auth/signUp";
     }
 
-    @PostMapping
-    public String signUp(@ModelAttribute("user") UserDTO user) {
-        userService.registerUser(user);
-        return "redirect:/";
+    @PostMapping("/signup")
+    public String signUp(@ModelAttribute("user") UserDTO user, Model model) {
+        try {
+            userService.registerUser(user);
+            return "redirect:/home";
+        } catch (SignUpException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            return "auth/signUp";
+        }
+    }
+    @GetMapping("/home")
+    public String home() {
+        return "home";
     }
 
 }

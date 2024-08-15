@@ -1,11 +1,13 @@
 package com.lucic.albumtracker.entity;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.util.Date;
 
 import java.util.UUID;
 
 @Entity
+@Data
 public class ReviewEntity {
     @Id
     @GeneratedValue
@@ -20,6 +22,5 @@ public class ReviewEntity {
     private int rating;
 
     private String comment;
-    private Date reviewDate;
 
 }

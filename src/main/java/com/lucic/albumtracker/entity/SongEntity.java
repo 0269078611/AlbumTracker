@@ -1,10 +1,13 @@
 package com.lucic.albumtracker.entity;
 import jakarta.persistence.*;
+import lombok.Data;
 
-import javax.annotation.processing.Generated;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
+@Data
 public class SongEntity {
     @Id
     @GeneratedValue
@@ -17,4 +20,5 @@ public class SongEntity {
     @ManyToOne
     @JoinColumn(name = "album_id", nullable = false)
     private AlbumEntity album;
+
 }
