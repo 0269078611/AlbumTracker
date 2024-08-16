@@ -3,6 +3,10 @@ import com.lucic.albumtracker.dto.UserDTO;
 import com.lucic.albumtracker.exception.SignUpException;
 import com.lucic.albumtracker.service.implementation.UserServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +19,11 @@ public class AuthenticationController {
     private final UserServiceImpl userService;
 
     @GetMapping("/login")
-    public String login(@RequestParam(value = "error", required = false) String error, Model model) {
+    public String login(@RequestParam(value = "error", required = false) String error, Model model, UserDTO user) {
         if (error != null) {
             model.addAttribute("errorMessage", "Bad credentials");
         }
+        model.addAttribute("user", user);
         return "auth/login";
     }
 
@@ -33,15 +38,17 @@ public class AuthenticationController {
     public String signUp(@ModelAttribute("user") UserDTO user, Model model) {
         try {
             userService.registerUser(user);
-            return "redirect:/home";
+
+            return "redirect:auth/home";
         } catch (SignUpException e) {
             model.addAttribute("errorMessage", e.getMessage());
             return "auth/signUp";
         }
     }
+
     @GetMapping("/home")
     public String home() {
-        return "home";
+        return "auth/home";
     }
 
 }

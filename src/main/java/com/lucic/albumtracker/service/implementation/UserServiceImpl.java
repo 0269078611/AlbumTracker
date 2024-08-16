@@ -9,6 +9,8 @@ import com.lucic.albumtracker.repository.UserRepository;
 import com.lucic.albumtracker.service.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -29,6 +32,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Override
     public boolean existByUsername(String username) {
@@ -41,16 +45,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(UserDTO user) {
         if (existByEmail(user.getEmail())) {
+
             throw new SignUpException("Email is already taken");
         }
 
         if (existByUsername(user.getUsername())) {
+
+
             throw new SignUpException("Username is already taken");
         }
 
         if (!isStrongPassword(user.getPassword())) {
+
+
             throw new SignUpException("Password is not strong enough");
         }
+
 
         UserEntity userEntity = userMapper.userDTOToUser(user);
         userEntity.setRole(Role.USER);

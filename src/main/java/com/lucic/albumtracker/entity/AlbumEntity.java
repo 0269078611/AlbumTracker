@@ -12,17 +12,22 @@ import java.util.UUID;
 public class AlbumEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "album_id")
     private UUID id;
+    @Column(name = "title")
     private String title;
     @ManyToOne
-    @JoinColumn(name = "genre_id", nullable = false)
+    @JoinColumn(name = "genre_id")
     private GenreEntity genre;
+    @Column(name = "release_date")
     private String releaseDate;
+    @Column(name = "description")
     private String description;
+    @Column(name = "rating")
     private double rating;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private UserEntity owner;
 
     @ManyToMany

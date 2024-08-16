@@ -15,18 +15,18 @@ import java.util.List;
 public class UserEntity {
     @Id
     @GeneratedValue
-    @Column
+    @Column (name = "user_id")
     private UUID id;
-    @Column
+    @Column(name = "username")
     private String username;
-    @Column
+    @Column (name = "email")
     private String email;
-    @Column
+    @Column(name = "password")
     private String password;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<ReviewEntity> review = new HashSet<>();
 
-    @Column
+    @Column (name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
 

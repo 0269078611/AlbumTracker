@@ -29,6 +29,7 @@ public class ArtistController {
         return "artists/list";
     }
 
+
     @GetMapping("/{id}")
     public String getArtistById(@PathVariable UUID id, Model model) {
         ArtistDTO artist = artistService.getArtistById(id);
@@ -36,14 +37,14 @@ public class ArtistController {
         return "artists/detail";
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/add")
     public String showCreateForm(Model model) {
         model.addAttribute("artist", new ArtistDTO());
         return "artists/addArtist";
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public String createArtist(ArtistDTO artistDTO) {
         artistService.createArtist(artistDTO);
