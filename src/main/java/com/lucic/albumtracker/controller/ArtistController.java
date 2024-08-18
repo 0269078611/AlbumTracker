@@ -1,22 +1,20 @@
 package com.lucic.albumtracker.controller;
 
 import com.lucic.albumtracker.dto.ArtistDTO;
+import com.lucic.albumtracker.dto.GenreDTO;
+import com.lucic.albumtracker.exception.NotFoundException;
 import com.lucic.albumtracker.service.ArtistService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @Controller
 @AllArgsConstructor
-@RequestMapping("/artists")
 public class ArtistController {
 
     private ArtistService artistService;
@@ -37,39 +35,38 @@ public class ArtistController {
         return "artists/detail";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/add")
-    public String showCreateForm(Model model) {
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/admin/artists")
+    public String manageGenres(Model model) {
+        List<ArtistDTO> artists = artistService.getAllArtists();
+        model.addAttribute("artists", artists);
         model.addAttribute("artist", new ArtistDTO());
-        return "artists/addArtist";
+        return "/admin/artists";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
-    public String createArtist(ArtistDTO artistDTO) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/admin/artists/add")
+    public String createArtist(@ModelAttribute("artist") ArtistDTO artistDTO) {
         artistService.createArtist(artistDTO);
-        return "redirect:/artists";
+        return "redirect:/admin/artists";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable UUID id, Model model) {
-        ArtistDTO artist = artistService.getArtistById(id);
-        model.addAttribute("artist", artist);
-        return "artists/editArtist";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/edit")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/admin/artists/edit/{id}")
     public String updateArtist(ArtistDTO artistDTO) {
         artistService.updateArtist(artistDTO);
-        return "redirect:/artists";
+        return "redirect:/admin/artists";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/delete")
-    public String deleteArtist(@PathVariable UUID id) {
-        artistService.deleteArtist(id);
-        return "redirect:/artists";
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/admin/artists/delete/{id}")
+    public String deleteArtist(@PathVariable UUID id, Model model) {
+        try {
+            artistService.deleteArtist(id);
+        } catch (NotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/admin/artists";
     }
 }

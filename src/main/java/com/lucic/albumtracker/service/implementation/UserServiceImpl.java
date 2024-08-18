@@ -9,20 +9,9 @@ import com.lucic.albumtracker.repository.UserRepository;
 import com.lucic.albumtracker.service.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 
 @Service
@@ -32,7 +21,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
-    private static final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+
 
     @Override
     public boolean existByUsername(String username) {
@@ -45,6 +34,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(UserDTO user) {
         if (existByEmail(user.getEmail())) {
+
 
             throw new SignUpException("Email is already taken");
         }
@@ -73,16 +63,19 @@ public class UserServiceImpl implements UserService {
         String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^\\da-zA-Z]).{8,}$";
         return password.matches(passwordRegex);
     }
-
     @PostConstruct
     public void loadData() {
-        if (userRepository.count() == 0) {
+
+        long adminCount = userRepository.countByRole(Role.ADMIN);
+
+        if (adminCount == 0) {
             UserEntity user = new UserEntity();
-            user.setUsername("testuser");
-            user.setEmail("test@example.com");
-            user.setPassword(passwordEncoder.encode("testpassword"));
-            user.setRole(Role.USER);
+            user.setUsername("admin");
+            user.setEmail("admin@example.com");
+            user.setPassword(passwordEncoder.encode("adminpassword")); // Use a secure password
+            user.setRole(Role.ADMIN);
             userRepository.save(user);
+            System.out.println("Admin user created: admin/adminpassword");
         }
     }
 

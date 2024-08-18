@@ -2,6 +2,7 @@ package com.lucic.albumtracker.controller;
 
 import com.lucic.albumtracker.dto.GenreDTO;
 import com.lucic.albumtracker.entity.GenreEntity;
+import com.lucic.albumtracker.exception.NotFoundException;
 import com.lucic.albumtracker.service.GenreService;
 import com.lucic.albumtracker.service.implementation.GenreServiceImpl;
 import lombok.AllArgsConstructor;
@@ -14,55 +15,52 @@ import java.util.List;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("/genres")
 @AllArgsConstructor
 public class GenreController {
 
-    private GenreService genreService;
+    private final GenreService genreService;
 
-
-    @GetMapping
+    @GetMapping("/genres")
     public String listGenres(Model model) {
-
         List<GenreDTO> genres = genreService.getAllGenres();
         model.addAttribute("genres", genres);
-        return "genres/list";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/add")
-    public String showCreateForm(Model model) {
         model.addAttribute("genre", new GenreDTO());
-        return "genres/addGenre";
+        return "genres";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/admin/genres")
+    public String manageGenres(Model model) {
+        List<GenreDTO> genres = genreService.getAllGenres();
+        model.addAttribute("genres", genres);
+        model.addAttribute("genre", new GenreDTO());
+        return "/admin/genres";
+    }
+
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/admin/genres/add")
     public String createGenre(@ModelAttribute("genre") GenreDTO genre) {
         genreService.createGenre(genre);
-        return "redirect:/genres";
+        return "redirect:/admin/genres";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{id}/edit")
-    public String showEditForm(@PathVariable UUID id, Model model) {
-        GenreDTO genre = genreService.getGenreById(id);
-        model.addAttribute("genre", genre);
-        return "genres/edit";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/edit")
-    public String updateGenre(@ModelAttribute GenreDTO updatedGenre) {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/admin/genres/edit/{id}")
+    public String updateGenre(@PathVariable UUID id, @ModelAttribute("genre") GenreDTO updatedGenre) {
+        updatedGenre.setId(id);
         genreService.updateGenre(updatedGenre);
-        return "redirect:/genres";
+        return "redirect:/admin/genres";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/delete")
-    public String deleteGenre(@PathVariable UUID id) {
-        genreService.deleteGenre(id);
-        return "redirect:/genres";
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/admin/genres/delete/{id}")
+    public String deleteGenre(@PathVariable UUID id,Model model) {
+        System.out.println("deleteGenre called with ID: " + id); // Confirm the ID received
+        try {
+            genreService.deleteGenre(id);
+        } catch (NotFoundException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/admin/genres";
     }
-
 }

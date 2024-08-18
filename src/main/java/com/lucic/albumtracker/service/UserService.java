@@ -13,5 +13,7 @@ public interface UserService {
     boolean existByEmail(String email);
 
     void registerUser(UserDTO user);
+
+
     boolean isStrongPassword(String password);
 }

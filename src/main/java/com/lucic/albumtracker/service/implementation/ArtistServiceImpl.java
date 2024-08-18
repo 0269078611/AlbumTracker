@@ -2,11 +2,11 @@ package com.lucic.albumtracker.service.implementation;
 
 import com.lucic.albumtracker.dto.ArtistDTO;
 import com.lucic.albumtracker.entity.ArtistEntity;
+import com.lucic.albumtracker.exception.NotFoundException;
 import com.lucic.albumtracker.mapper.ArtistMapper;
 import com.lucic.albumtracker.repository.ArtistRepository;
 import com.lucic.albumtracker.service.ArtistService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class ArtistServiceImpl implements ArtistService {
 
   public ArtistDTO getArtistById(UUID id) {
     ArtistEntity artist = artistRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Artist not found"));
+            .orElseThrow(() -> new NotFoundException("Artist not found"));
     return artistMapper.artistToArtistDTO(artist);
   }
 
@@ -52,7 +52,7 @@ public class ArtistServiceImpl implements ArtistService {
 
     public ArtistEntity updateArtist (ArtistDTO artistDTO){
       ArtistEntity existingArtist = artistRepository.findById(artistDTO.getId())
-              .orElseThrow(() -> new RuntimeException("Artist not found"));
+              .orElseThrow(() -> new NotFoundException("Artist not found"));
 
       existingArtist.setName(artistDTO.getName());
 
@@ -60,6 +60,9 @@ public class ArtistServiceImpl implements ArtistService {
     }
 
     public void deleteArtist (UUID id){
+      if (!artistRepository.existsById(id)) {
+        throw new NotFoundException("Artist not found");
+      }
       artistRepository.deleteById(id);
     }
 

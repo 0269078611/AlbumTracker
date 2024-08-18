@@ -26,10 +26,6 @@ public class AlbumEntity {
     @Column(name = "rating")
     private double rating;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity owner;
-
     @ManyToMany
     @JoinTable(
             name = "album_artist",
@@ -40,5 +36,8 @@ public class AlbumEntity {
 
     @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<SongEntity> songs = new HashSet<>();
+
+    @OneToMany(mappedBy = "album", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ReviewEntity> reviews = new HashSet<>();
 
 }

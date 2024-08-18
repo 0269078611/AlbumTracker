@@ -17,7 +17,9 @@ public class ArtistEntity {
 
     private String name;
 
-
     @ManyToMany(mappedBy = "artists")
     private Set<AlbumEntity> albums = new HashSet<>();
+
+    @ManyToMany(mappedBy = "artists")
+    private Set<SongEntity> songs = new HashSet<>();
 }

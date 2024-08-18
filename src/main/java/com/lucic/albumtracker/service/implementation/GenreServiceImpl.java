@@ -2,12 +2,12 @@ package com.lucic.albumtracker.service.implementation;
 
 import com.lucic.albumtracker.dto.GenreDTO;
 import com.lucic.albumtracker.entity.GenreEntity;
+import com.lucic.albumtracker.exception.NotFoundException;
 import com.lucic.albumtracker.mapper.GenreMapper;
 import com.lucic.albumtracker.repository.GenreRepository;
 import com.lucic.albumtracker.service.GenreService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreDTO getGenreById(UUID id) {
         GenreEntity genre = genreRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Genre not found"));
+                .orElseThrow(() -> new NotFoundException("Genre not found"));
         return genreMapper.genreToGenreDTO(genre);
     }
 
@@ -54,16 +54,15 @@ public class GenreServiceImpl implements GenreService {
     @Override
     public GenreEntity updateGenre(GenreDTO genreDTO) {
         GenreEntity existingGenre = genreRepository.findById(genreDTO.getId())
-                .orElseThrow(() -> new RuntimeException("Genre not found"));
+                .orElseThrow(() -> new NotFoundException("Genre not found"));
         existingGenre.setName(genreDTO.getName());
         return genreRepository.save(existingGenre);
     }
 
     @Override
     public void deleteGenre(UUID id) {
-
         if (!genreRepository.existsById(id)) {
-            throw new RuntimeException("Genre not found");
+            throw new NotFoundException("Genre not found");
         }
         genreRepository.deleteById(id);
     }
