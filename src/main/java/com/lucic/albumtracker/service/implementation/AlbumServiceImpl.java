@@ -1,20 +1,19 @@
 package com.lucic.albumtracker.service.implementation;
 
 
-import com.lucic.albumtracker.dto.AlbumDTO;
+
 import com.lucic.albumtracker.entity.AlbumEntity;
 import com.lucic.albumtracker.entity.ArtistEntity;
 import com.lucic.albumtracker.entity.GenreEntity;
 import com.lucic.albumtracker.entity.SongEntity;
 import com.lucic.albumtracker.exception.NotFoundException;
-import com.lucic.albumtracker.mapper.AlbumMapper;
-import com.lucic.albumtracker.mapper.ArtistMapper;
-import com.lucic.albumtracker.mapper.GenreMapper;
+
 import com.lucic.albumtracker.repository.AlbumRepository;
 import com.lucic.albumtracker.repository.ArtistRepository;
 import com.lucic.albumtracker.repository.GenreRepository;
 import com.lucic.albumtracker.repository.SongRepository;
 import com.lucic.albumtracker.service.AlbumService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,64 +30,74 @@ public class AlbumServiceImpl implements AlbumService {
     private final SongRepository songRepository;
     private final GenreRepository genreRepository;
     private final ArtistRepository artistRepository;
-    private final AlbumMapper albumMapper;
-    
+
     @Override
-    public Set<AlbumDTO> getAllAlbums() {
+    public Set<AlbumEntity> getAllAlbums() {
         return albumRepository.findAll().stream()
-                .map(albumMapper::toDto)
                 .collect(Collectors.toSet());
     }
 
     @Override
-    public AlbumDTO getAlbumById(UUID albumId) {
-        AlbumEntity album = albumRepository.findById(albumId)
+    public AlbumEntity getAlbumById(UUID albumId) {
+        return albumRepository.findById(albumId)
                 .orElseThrow(() -> new NotFoundException("Album not found"));
-        return albumMapper.toDto(album);
     }
+
     @Override
-    public AlbumDTO createAlbum(AlbumDTO albumDTO) {
-        GenreEntity genre = genreRepository.findById(albumDTO.getGenreId())
+    @Transactional
+    public AlbumEntity createAlbum(AlbumEntity albumEntity) {
+        GenreEntity genre = genreRepository.findById(albumEntity.getGenre().getId())
                 .orElseThrow(() -> new NotFoundException("Genre not found"));
 
-        Set<ArtistEntity> artists = new HashSet<>(artistRepository.findAllById(albumDTO.getArtistIds()));
-        if (artists.size() != albumDTO.getArtistIds().size()) {
-            throw new NotFoundException("Artist not found");
+        Set<ArtistEntity> artists = new HashSet<>(artistRepository.findAllById(albumEntity.getArtists().stream()
+                .map(ArtistEntity::getId)
+                .collect(Collectors.toSet())));
+        if (artists.size() != albumEntity.getArtists().size()) {
+            throw new NotFoundException("One or more artists not found");
         }
 
-        AlbumEntity albumEntity = albumMapper.toEntity(albumDTO);
         albumEntity.setGenre(genre);
         albumEntity.setArtists(artists);
 
-
-        AlbumEntity savedAlbum = albumRepository.save(albumEntity);
-
-        return albumMapper.toDto(savedAlbum);
+        return albumRepository.save(albumEntity);
     }
+
     @Override
-    public AlbumDTO updateAlbum(AlbumDTO albumDTO) {
-        AlbumEntity existingAlbum = albumRepository.findById(albumDTO.getId())
-                .orElseThrow(() -> new NotFoundException("Album not found "));
+    @Transactional
+    public AlbumEntity updateAlbum(AlbumEntity albumEntity) {
+        AlbumEntity existingAlbum = albumRepository.findById(albumEntity.getId())
+                .orElseThrow(() -> new NotFoundException("Album not found"));
 
-        existingAlbum.setTitle(albumDTO.getTitle());
-        existingAlbum.setReleaseDate(albumDTO.getReleaseDate());
+        existingAlbum.setTitle(albumEntity.getTitle());
+        existingAlbum.setReleaseDate(albumEntity.getReleaseDate());
 
-        if (albumDTO.getGenreId() != null) {
-            GenreEntity genreEntity = genreRepository.findById(albumDTO.getGenreId())
-                    .orElseThrow(() -> new NotFoundException("Genre not found."));
+        if (albumEntity.getGenre() != null) {
+            GenreEntity genreEntity = genreRepository.findById(albumEntity.getGenre().getId())
+                    .orElseThrow(() -> new NotFoundException("Genre not found"));
             existingAlbum.setGenre(genreEntity);
         }
-        if (albumDTO.getArtistIds() != null && !albumDTO.getArtistIds().isEmpty()) {
-            Set<ArtistEntity> artists = albumMapper.albumMapIdsToArtists(albumDTO.getArtistIds(), artistRepository);
+
+        if (albumEntity.getArtists() != null && !albumEntity.getArtists().isEmpty()) {
+            Set<ArtistEntity> artists = new HashSet<>(artistRepository.findAllById(albumEntity.getArtists().stream()
+                    .map(ArtistEntity::getId)
+                    .collect(Collectors.toSet())));
+            if (artists.size() != albumEntity.getArtists().size()) {
+                throw new NotFoundException("One or more artists not found");
+            }
             existingAlbum.setArtists(artists);
         }
 
-        if (albumDTO.getSongIds() != null && !albumDTO.getSongIds().isEmpty()) {
-            Set<SongEntity> songs = albumMapper.albumMapIdsToSongs(albumDTO.getSongIds(), songRepository);
+        if (albumEntity.getSongs() != null && !albumEntity.getSongs().isEmpty()) {
+            Set<SongEntity> songs = new HashSet<>(songRepository.findAllById(albumEntity.getSongs().stream()
+                    .map(SongEntity::getId)
+                    .collect(Collectors.toSet())));
+            if (songs.size() != albumEntity.getSongs().size()) {
+                throw new NotFoundException("One or more songs not found");
+            }
             existingAlbum.setSongs(songs);
         }
-        existingAlbum = albumRepository.save(existingAlbum);
-        return albumMapper.toDto(existingAlbum);
+
+        return albumRepository.save(existingAlbum);
     }
 
     @Override

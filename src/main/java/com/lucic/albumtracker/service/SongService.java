@@ -1,17 +1,21 @@
 package com.lucic.albumtracker.service;
 
-import com.lucic.albumtracker.dto.AlbumDTO;
-import com.lucic.albumtracker.dto.SongDTO;
+
+import com.lucic.albumtracker.entity.SongEntity;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface SongService {
 
-        SongDTO getSongById(UUID songId);
-        List<SongDTO> getSongsByAlbumId(UUID albumId);
-        SongDTO createSong(UUID albumId, SongDTO songDTO);
-        SongDTO updateSong(UUID songId, SongDTO songDTO);
+        SongEntity getSongById(UUID songId);
+
+        List<SongEntity> getSongsByAlbumId(UUID albumId);
+
+        SongEntity createSong(UUID albumId, SongEntity songEntity);
+
+        SongEntity updateSong(UUID songId, SongEntity songEntity);
+
         void deleteSong(UUID songId);
 }
 

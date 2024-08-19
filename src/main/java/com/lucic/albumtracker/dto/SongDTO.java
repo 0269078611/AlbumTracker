@@ -1,15 +1,15 @@
-package com.lucic.albumtracker.dto;
-
-import lombok.Data;
-
-import java.util.Set;
-import java.util.UUID;
-@Data
-public class SongDTO {
-    private UUID id;
-    private String title;
-    private int trackNumber;
-    private String duration;
-    private UUID albumId;
-    private Set<UUID> artistIds;
-}
+//package com.lucic.albumtracker.dto;
+//
+//import lombok.Data;
+//
+//import java.util.Set;
+//import java.util.UUID;
+//@Data
+//public class SongDTO {
+//    private UUID id;
+//    private String title;
+//    private int trackNumber;
+//    private String duration;
+//    private UUID albumId;
+//    private Set<UUID> artistIds;
+//}

@@ -1,6 +1,6 @@
 package com.lucic.albumtracker.service;
 
-import com.lucic.albumtracker.dto.UserDTO;
+
 import com.lucic.albumtracker.entity.UserEntity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -12,7 +12,7 @@ public interface UserService {
     boolean existByUsername(String username);
     boolean existByEmail(String email);
 
-    void registerUser(UserDTO user);
+    void registerUser(UserEntity user);
 
 
     boolean isStrongPassword(String password);

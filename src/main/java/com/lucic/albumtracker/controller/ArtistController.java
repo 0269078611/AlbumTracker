@@ -1,7 +1,7 @@
 package com.lucic.albumtracker.controller;
 
-import com.lucic.albumtracker.dto.ArtistDTO;
-import com.lucic.albumtracker.dto.GenreDTO;
+
+import com.lucic.albumtracker.entity.ArtistEntity;
 import com.lucic.albumtracker.exception.NotFoundException;
 import com.lucic.albumtracker.service.ArtistService;
 import lombok.AllArgsConstructor;
@@ -18,45 +18,43 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ArtistController {
 
-    private ArtistService artistService;
+    private final ArtistService artistService;
 
-
-    @GetMapping
+    @GetMapping("/artists")
     public String listArtists(Model model) {
-        Set<ArtistDTO> artists = artistService.getAllArtists();
+        Set<ArtistEntity> artists = artistService.getAllArtists();
         model.addAttribute("artists", artists);
         return "artists/list";
     }
 
-
-    @GetMapping("/{id}")
+    @GetMapping("/artists/{id}")
     public String getArtistById(@PathVariable UUID id, Model model) {
-        ArtistDTO artist = artistService.getArtistById(id);
+        ArtistEntity artist = artistService.getArtistById(id);
         model.addAttribute("artist", artist);
         return "artists/detail";
     }
 
-
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/artists")
     public String manageArtists(Model model) {
-        Set<ArtistDTO> artists = artistService.getAllArtists();
+        Set<ArtistEntity> artists = artistService.getAllArtists();
         model.addAttribute("artists", artists);
-        model.addAttribute("artist", new ArtistDTO());
+        model.addAttribute("artist", new ArtistEntity()); // Prepare a new entity for the form
         return "/admin/artists";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin/artists/add")
-    public String createArtist(@ModelAttribute("artist") ArtistDTO artistDTO) {
-        artistService.createArtist(artistDTO);
+    public String createArtist(@ModelAttribute("artist") ArtistEntity artist) {
+        artistService.createArtist(artist);
         return "redirect:/admin/artists";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin/artists/edit/{id}")
-    public String updateArtist(ArtistDTO artistDTO) {
-        artistService.updateArtist(artistDTO);
+    public String updateArtist(@PathVariable UUID id, @ModelAttribute("artist") ArtistEntity updatedArtist) {
+        updatedArtist.setId(id); // Ensure the ID is set for the update
+        artistService.updateArtist(updatedArtist);
         return "redirect:/admin/artists";
     }
 

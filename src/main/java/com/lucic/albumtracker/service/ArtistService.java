@@ -1,6 +1,6 @@
 package com.lucic.albumtracker.service;
 
-import com.lucic.albumtracker.dto.ArtistDTO;
+
 import com.lucic.albumtracker.entity.ArtistEntity;
 
 import java.util.List;
@@ -9,13 +9,13 @@ import java.util.UUID;
 
 public interface ArtistService {
 
-    Set<ArtistDTO> getAllArtists();
+    Set<ArtistEntity> getAllArtists();
 
-    ArtistDTO getArtistById(UUID id);
+    ArtistEntity getArtistById(UUID id);
 
-    ArtistDTO createArtist(ArtistDTO artistDTO);
+    ArtistEntity createArtist(ArtistEntity artistEntity);
 
-    ArtistDTO updateArtist(ArtistDTO artistDTO);
+    ArtistEntity updateArtist(ArtistEntity artistEntity);
 
     void deleteArtist(UUID id);
 }

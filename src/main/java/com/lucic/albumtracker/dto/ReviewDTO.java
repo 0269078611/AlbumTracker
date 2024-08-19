@@ -1,4 +1,4 @@
-package com.lucic.albumtracker.dto;
-
-public class ReviewDTO {
-}
+//package com.lucic.albumtracker.dto;
+//
+//public class ReviewDTO {
+//}

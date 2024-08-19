@@ -1,10 +1,10 @@
 package com.lucic.albumtracker.service.implementation;
 
-import com.lucic.albumtracker.dto.UserDTO;
+
 import com.lucic.albumtracker.entity.UserEntity;
 import com.lucic.albumtracker.entity.enums.Role;
 import com.lucic.albumtracker.exception.SignUpException;
-import com.lucic.albumtracker.mapper.UserMapper;
+
 import com.lucic.albumtracker.repository.UserRepository;
 import com.lucic.albumtracker.service.UserService;
 import jakarta.annotation.PostConstruct;
@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -32,7 +31,7 @@ public class UserServiceImpl implements UserService {
         return !userRepository.findByEmail(email).isEmpty();
     }
     @Override
-    public void registerUser(UserDTO user) {
+    public void registerUser(UserEntity user) {
         if (existByEmail(user.getEmail())) {
 
 
@@ -52,11 +51,10 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        UserEntity userEntity = userMapper.userDTOToUser(user);
-        userEntity.setRole(Role.USER);
-        userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.USER);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        userRepository.save(userEntity);
+        userRepository.save(user);
     }
     @Override
     public boolean isStrongPassword(String password) {

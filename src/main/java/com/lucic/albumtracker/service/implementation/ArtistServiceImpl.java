@@ -1,11 +1,12 @@
 package com.lucic.albumtracker.service.implementation;
 
-import com.lucic.albumtracker.dto.ArtistDTO;
+
 import com.lucic.albumtracker.entity.ArtistEntity;
 import com.lucic.albumtracker.exception.NotFoundException;
-import com.lucic.albumtracker.mapper.ArtistMapper;
+
 import com.lucic.albumtracker.repository.ArtistRepository;
 import com.lucic.albumtracker.service.ArtistService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,48 +22,47 @@ public class ArtistServiceImpl implements ArtistService {
 
   private final ArtistRepository artistRepository;
 
-  private final ArtistMapper artistMapper;
-
-
-
-  public Set<ArtistDTO> getAllArtists() {
+  @Override
+  public Set<ArtistEntity> getAllArtists() {
     return artistRepository.findAll().stream()
-            .map(artistMapper::toDto)
             .collect(Collectors.toSet());
   }
 
-
-  public ArtistDTO getArtistById(UUID id) {
-    ArtistEntity artist = artistRepository.findById(id)
+  @Override
+  public ArtistEntity getArtistById(UUID id) {
+    return artistRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Artist not found"));
-    return artistMapper.toDto(artist);
   }
 
-
-  public ArtistDTO createArtist(ArtistDTO artistDTO) {
-    Optional<ArtistEntity> existingArtist = artistRepository.findByName(artistDTO.getName());
+  @Override
+  @Transactional
+  public ArtistEntity createArtist(ArtistEntity artistEntity) {
+    Optional<ArtistEntity> existingArtist = artistRepository.findByName(artistEntity.getName());
 
     if (existingArtist.isPresent()) {
       throw new RuntimeException("Artist already exists.");
-    } else {
-      return artistMapper.toDto(artistRepository.save(artistMapper.toEntity(artistDTO)));
     }
+
+    return artistRepository.save(artistEntity);
   }
 
-    public ArtistDTO updateArtist (ArtistDTO artistDTO){
-      ArtistEntity existingArtist = artistRepository.findById(artistDTO.getId())
-              .orElseThrow(() -> new NotFoundException("Artist not found"));
+  @Override
+  @Transactional
+  public ArtistEntity updateArtist(ArtistEntity artistEntity) {
+    ArtistEntity existingArtist = artistRepository.findById(artistEntity.getId())
+            .orElseThrow(() -> new NotFoundException("Artist not found"));
 
-      existingArtist.setName(artistDTO.getName());
+    existingArtist.setName(artistEntity.getName());
 
-      return artistMapper.toDto(artistRepository.save(existingArtist));
+    return artistRepository.save(existingArtist);
+  }
+
+  @Override
+  public void deleteArtist(UUID id) {
+    if (!artistRepository.existsById(id)) {
+      throw new NotFoundException("Artist not found");
     }
 
-    public void deleteArtist (UUID id){
-      if (!artistRepository.existsById(id)) {
-        throw new NotFoundException("Artist not found");
-      }
-      artistRepository.deleteById(id);
-    }
-
+    artistRepository.deleteById(id);
+  }
 }

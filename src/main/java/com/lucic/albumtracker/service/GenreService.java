@@ -1,6 +1,6 @@
 package com.lucic.albumtracker.service;
 
-import com.lucic.albumtracker.dto.GenreDTO;
+
 import com.lucic.albumtracker.entity.GenreEntity;
 
 import java.util.List;
@@ -8,15 +8,15 @@ import java.util.UUID;
 
 public interface GenreService {
 
-    List<GenreDTO> getAllGenres();
+    List<GenreEntity> getAllGenres();
 
-    List<GenreDTO> searchGenres(String query);
+    List<GenreEntity> searchGenres(String query);
 
-    GenreDTO getGenreById(UUID id);
+    GenreEntity getGenreById(UUID id);
 
-    GenreEntity createGenre(GenreDTO genreDTO);
+    GenreEntity createGenre(GenreEntity genreEntity);
 
-    GenreEntity updateGenre(GenreDTO genreDTO);
+    GenreEntity updateGenre(GenreEntity genreEntity);
 
     void deleteGenre(UUID id);
 }

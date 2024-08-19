@@ -17,12 +17,15 @@
         <tr>
             <th>Title</th>
             <th>Track Number</th>
+            <th>Duration</th>
             <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="song : ${songs}">
             <td th:text="${song.title}"></td>
+            <td th:text="${song.trackNumber}"></td>
+            <td th:text="${song.duration}"></td>
             <td th:text="${song.trackNumber}"></td>
             <td>
                 <!-- Edit and Delete buttons trigger modals -->
@@ -33,11 +36,9 @@
         </tbody>
     </table>
 
-    <!-- Button to trigger the Add Song Modal -->
     <button type="button" onclick="openAddModal()">Add New Song</button>
 </div>
 
-<!-- Add Song Modal -->
 <div id="addSongModal" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close" onclick="closeAddModal()">&times;</span>
@@ -63,7 +64,7 @@
     </div>
 </div>
 
-<!-- Edit Song Modal -->
+
 <div id="editSongModal" class="modal" style="display: none;">
     <div class="modal-content">
         <span class="close" onclick="closeEditModal()">&times;</span>

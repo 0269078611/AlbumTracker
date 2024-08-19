@@ -1,6 +1,6 @@
 package com.lucic.albumtracker.controller;
 
-import com.lucic.albumtracker.dto.GenreDTO;
+
 import com.lucic.albumtracker.entity.GenreEntity;
 import com.lucic.albumtracker.exception.NotFoundException;
 import com.lucic.albumtracker.service.GenreService;
@@ -22,31 +22,31 @@ public class GenreController {
 
     @GetMapping("/genres")
     public String listGenres(Model model) {
-        List<GenreDTO> genres = genreService.getAllGenres();
+        List<GenreEntity> genres = genreService.getAllGenres();
         model.addAttribute("genres", genres);
-        model.addAttribute("genre", new GenreDTO());
+        model.addAttribute("genre", new GenreEntity());
         return "genres";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/genres")
     public String manageGenres(Model model) {
-        List<GenreDTO> genres = genreService.getAllGenres();
+        List<GenreEntity> genres = genreService.getAllGenres();
         model.addAttribute("genres", genres);
-        model.addAttribute("genre", new GenreDTO());
+        model.addAttribute("genre", new GenreEntity());
         return "/admin/genres";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin/genres/add")
-    public String createGenre(@ModelAttribute("genre") GenreDTO genre) {
+    public String createGenre(@ModelAttribute("genre") GenreEntity genre) {
         genreService.createGenre(genre);
         return "redirect:/admin/genres";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin/genres/edit/{id}")
-    public String updateGenre(@PathVariable UUID id, @ModelAttribute("genre") GenreDTO updatedGenre) {
+    public String updateGenre(@PathVariable UUID id, @ModelAttribute("genre") GenreEntity updatedGenre) {
         updatedGenre.setId(id);
         genreService.updateGenre(updatedGenre);
         return "redirect:/admin/genres";
@@ -54,8 +54,7 @@ public class GenreController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin/genres/delete/{id}")
-    public String deleteGenre(@PathVariable UUID id,Model model) {
-        System.out.println("deleteGenre called with ID: " + id); // Confirm the ID received
+    public String deleteGenre(@PathVariable UUID id, Model model) {
         try {
             genreService.deleteGenre(id);
         } catch (NotFoundException e) {

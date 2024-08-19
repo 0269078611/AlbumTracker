@@ -12,8 +12,9 @@ import java.util.UUID;
 public class GenreEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="genre_id")
     private UUID id;
-
+    @Column(name="name")
     private String name;
 
     @OneToMany(mappedBy = "genre")
