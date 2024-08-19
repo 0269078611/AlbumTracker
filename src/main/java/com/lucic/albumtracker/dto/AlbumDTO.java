@@ -9,13 +9,11 @@ import java.util.UUID;
 public class AlbumDTO {
         private UUID id;
         private String title;
-        private GenreDTO genre;
+        private UUID genreId;
         private String releaseDate;
         private String description;
         private double rating;
-        private UserDTO owner;
-        private Set<ArtistDTO> artists;
-        private Set<SongDTO> songs;
-
-
+        private Set<UUID> artistIds;
+        private Set<UUID> songIds;
+        private Set<ReviewDTO> reviews;
 }

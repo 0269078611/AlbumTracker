@@ -6,17 +6,18 @@ import com.lucic.albumtracker.entity.AlbumEntity;
 import com.lucic.albumtracker.entity.GenreEntity;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface AlbumService {
 
-    List<AlbumDTO> getAllAlbums();
+    Set<AlbumDTO> getAllAlbums();
 
     AlbumDTO getAlbumById(UUID id);
 
-    AlbumEntity createAlbum(AlbumDTO albumDTO);
+    AlbumDTO createAlbum(AlbumDTO albumDTO);
 
-    AlbumEntity updateAlbum(AlbumDTO albumDTO);
+    AlbumDTO updateAlbum(AlbumDTO albumDTO);
 
     void deleteAlbum(UUID id);
 

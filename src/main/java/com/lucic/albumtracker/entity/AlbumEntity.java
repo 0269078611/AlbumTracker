@@ -24,6 +24,7 @@ public class AlbumEntity {
     @Column(name = "description")
     private String description;
     @Column(name = "rating")
+
     private double rating;
 
     @ManyToMany

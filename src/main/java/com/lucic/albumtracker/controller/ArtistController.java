@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Controller
@@ -22,7 +23,7 @@ public class ArtistController {
 
     @GetMapping
     public String listArtists(Model model) {
-        List<ArtistDTO> artists = artistService.getAllArtists();
+        Set<ArtistDTO> artists = artistService.getAllArtists();
         model.addAttribute("artists", artists);
         return "artists/list";
     }
@@ -38,8 +39,8 @@ public class ArtistController {
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/artists")
-    public String manageGenres(Model model) {
-        List<ArtistDTO> artists = artistService.getAllArtists();
+    public String manageArtists(Model model) {
+        Set<ArtistDTO> artists = artistService.getAllArtists();
         model.addAttribute("artists", artists);
         model.addAttribute("artist", new ArtistDTO());
         return "/admin/artists";

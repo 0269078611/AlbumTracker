@@ -2,6 +2,7 @@ package com.lucic.albumtracker.dto;
 
 import lombok.Data;
 
+import java.util.Set;
 import java.util.UUID;
 @Data
 public class SongDTO {
@@ -10,4 +11,5 @@ public class SongDTO {
     private int trackNumber;
     private String duration;
     private UUID albumId;
+    private Set<UUID> artistIds;
 }

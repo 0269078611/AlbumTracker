@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Album</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="container">
+    <h2>Create Album</h2>
+
+    <!-- Album Creation Form -->
+    <form th:action="@{/admin/album/create}" th:object="${album}" method="post">
+        <div>
+            <label for="title">Title:</label>
+            <input type="text" id="title" th:field="*{title}" required />
+        </div>
+
+        <div>
+            <label for="releaseDate">Release Date:</label>
+            <input type="date" id="releaseDate" th:field="*{releaseDate}" required />
+        </div>
+
+        <div>
+            <label for="genre">Genre:</label>
+            <select id="genre" th:field="*{genreId}" required>
+                <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"></option>
+            </select>
+        </div>
+
+        <div>
+            <label for="artists">Artists:</label>
+            <select id="artists" th:field="*{artistIds}" multiple required>
+                <option th:each="artist : ${artists}" th:value="${artist.id}" th:text="${artist.name}"></option>
+            </select>
+        </div>
+
+        <div>
+            <label for="description">Description:</label>
+            <textarea id="description" th:field="*{description}" rows="4"></textarea>
+        </div>
+
+        <!-- Save Album Button -->
+        <div>
+            <button type="submit">Save Album</button>
+        </div>
+    </form>
+
+    <!-- Option to manage songs after album creation -->
+    <div th:if="${album.id != null}">
+        <a th:href="@{'/admin/album/' + ${album.id} + '/songs'}">Manage Songs</a>
+    </div>
+</div>
+
+</body>
+</html>

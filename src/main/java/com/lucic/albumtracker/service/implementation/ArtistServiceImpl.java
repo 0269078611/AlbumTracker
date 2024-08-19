@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,39 +25,37 @@ public class ArtistServiceImpl implements ArtistService {
 
 
 
-  public List<ArtistDTO> getAllArtists() {
+  public Set<ArtistDTO> getAllArtists() {
     return artistRepository.findAll().stream()
-            .map(artistMapper::artistToArtistDTO)
-            .collect(Collectors.toList());
+            .map(artistMapper::toDto)
+            .collect(Collectors.toSet());
   }
 
 
   public ArtistDTO getArtistById(UUID id) {
     ArtistEntity artist = artistRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("Artist not found"));
-    return artistMapper.artistToArtistDTO(artist);
+    return artistMapper.toDto(artist);
   }
 
 
-  public ArtistEntity createArtist(ArtistDTO artistDTO) {
+  public ArtistDTO createArtist(ArtistDTO artistDTO) {
     Optional<ArtistEntity> existingArtist = artistRepository.findByName(artistDTO.getName());
 
     if (existingArtist.isPresent()) {
       throw new RuntimeException("Artist already exists.");
     } else {
-      ArtistEntity artistEntity = artistMapper.artistDTOToArtist(artistDTO);
-      return artistRepository.save(artistEntity);
+      return artistMapper.toDto(artistRepository.save(artistMapper.toEntity(artistDTO)));
     }
   }
 
-
-    public ArtistEntity updateArtist (ArtistDTO artistDTO){
+    public ArtistDTO updateArtist (ArtistDTO artistDTO){
       ArtistEntity existingArtist = artistRepository.findById(artistDTO.getId())
               .orElseThrow(() -> new NotFoundException("Artist not found"));
 
       existingArtist.setName(artistDTO.getName());
 
-      return artistRepository.save(existingArtist);
+      return artistMapper.toDto(artistRepository.save(existingArtist));
     }
 
     public void deleteArtist (UUID id){

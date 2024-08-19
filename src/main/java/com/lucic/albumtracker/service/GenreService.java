@@ -10,6 +10,8 @@ public interface GenreService {
 
     List<GenreDTO> getAllGenres();
 
+    List<GenreDTO> searchGenres(String query);
+
     GenreDTO getGenreById(UUID id);
 
     GenreEntity createGenre(GenreDTO genreDTO);

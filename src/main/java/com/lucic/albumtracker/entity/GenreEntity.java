@@ -16,6 +16,6 @@ public class GenreEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "genre", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "genre")
     private Set<AlbumEntity> albums = new HashSet<>();
 }

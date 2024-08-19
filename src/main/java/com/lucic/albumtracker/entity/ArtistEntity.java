@@ -12,10 +12,13 @@ import java.util.UUID;
 @Data
 public class ArtistEntity {
     @Id
+    @Column(name="artist_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-
+    @Column(name="name")
     private String name;
+    @Column(name="bio")
+    private String bio;
 
     @ManyToMany(mappedBy = "artists")
     private Set<AlbumEntity> albums = new HashSet<>();

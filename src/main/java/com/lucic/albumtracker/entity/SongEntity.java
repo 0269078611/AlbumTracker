@@ -21,4 +21,12 @@ public class SongEntity {
     @JoinColumn(name = "album_id", nullable = false)
     private AlbumEntity album;
 
+    @ManyToMany
+    @JoinTable(
+            name = "artist_song",
+            joinColumns = @JoinColumn(name = "song_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    private Set<ArtistEntity> artists = new HashSet<>();
+
 }

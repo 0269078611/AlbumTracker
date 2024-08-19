@@ -10,5 +10,7 @@ import java.util.UUID;
 public class ArtistDTO {
     private UUID id;
     private String name;
-    private Set<AlbumDTO> albums;
+    private String bio;
+    private Set<UUID> albumIds;
+    private Set<UUID> songIds;
 }
