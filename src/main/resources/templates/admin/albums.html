@@ -10,7 +10,7 @@
 <div class="container">
     <h2>Create Album</h2>
 
-    <!-- Album Creation Form -->
+
     <form th:action="@{/admin/album/create}" th:object="${album}" method="post">
         <div>
             <label for="title">Title:</label>
@@ -41,13 +41,13 @@
             <textarea id="description" th:field="*{description}" rows="4"></textarea>
         </div>
 
-        <!-- Save Album Button -->
+
         <div>
             <button type="submit">Save Album</button>
         </div>
     </form>
 
-    <!-- Option to manage songs after album creation -->
+
     <div th:if="${album.id != null}">
         <a th:href="@{'/admin/album/' + ${album.id} + '/songs'}">Manage Songs</a>
     </div>

@@ -5,14 +5,14 @@
     <title>Create Album</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
     <style>
-        /* Additional styles */
+
         #genre {
-            width: 300px; /* Adjust width as needed */
+            width: 300px;
         }
 
-        /* If the options list needs to be wider */
+
         #genre option {
-            width: auto; /* Adjusts the option width automatically based on content */
+            width: auto;
         }
     </style>
 </head>
@@ -21,7 +21,7 @@
 <div class="container">
     <h2>Create Album</h2>
 
-    <!-- Album Creation Form -->
+
     <form th:action="@{/admin/albums/add}" th:object="${album}" method="post">
         <div>
             <label for="title">Title:</label>
@@ -60,7 +60,7 @@
             <textarea id="description" th:field="*{description}" rows="4"></textarea>
         </div>
 
-        <!-- Save Album Button -->
+
         <div>
             <button type="submit">Save Album</button>
         </div>
