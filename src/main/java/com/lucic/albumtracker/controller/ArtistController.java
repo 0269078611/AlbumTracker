@@ -39,7 +39,7 @@ public class ArtistController {
     public String manageArtists(Model model) {
         Set<ArtistEntity> artists = artistService.getAllArtists();
         model.addAttribute("artists", artists);
-        model.addAttribute("artist", new ArtistEntity()); // Prepare a new entity for the form
+        model.addAttribute("artist", new ArtistEntity());
         return "/admin/artists";
     }
 
@@ -53,7 +53,7 @@ public class ArtistController {
     @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin/artists/edit/{id}")
     public String updateArtist(@PathVariable UUID id, @ModelAttribute("artist") ArtistEntity updatedArtist) {
-        updatedArtist.setId(id); // Ensure the ID is set for the update
+        updatedArtist.setId(id);
         artistService.updateArtist(updatedArtist);
         return "redirect:/admin/artists";
     }
