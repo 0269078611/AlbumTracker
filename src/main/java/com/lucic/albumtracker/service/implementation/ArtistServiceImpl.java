@@ -2,6 +2,7 @@ package com.lucic.albumtracker.service.implementation;
 
 
 import com.lucic.albumtracker.entity.ArtistEntity;
+import com.lucic.albumtracker.entity.GenreEntity;
 import com.lucic.albumtracker.exception.NotFoundException;
 
 import com.lucic.albumtracker.repository.ArtistRepository;

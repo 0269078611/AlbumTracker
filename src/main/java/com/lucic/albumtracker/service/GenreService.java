@@ -10,7 +10,6 @@ public interface GenreService {
 
     List<GenreEntity> getAllGenres();
 
-    List<GenreEntity> searchGenres(String query);
 
     GenreEntity getGenreById(UUID id);
 

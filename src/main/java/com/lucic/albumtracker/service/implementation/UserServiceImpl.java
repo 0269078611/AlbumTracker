@@ -69,8 +69,8 @@ public class UserServiceImpl implements UserService {
         if (adminCount == 0) {
             UserEntity user = new UserEntity();
             user.setUsername("admin");
-            user.setEmail("admin@example.com");
-            user.setPassword(passwordEncoder.encode("adminpassword")); // Use a secure password
+            user.setEmail("admin@gmail.com");
+            user.setPassword(passwordEncoder.encode("adminpassword"));
             user.setRole(Role.ADMIN);
             userRepository.save(user);
             System.out.println("Admin user created: admin/adminpassword");

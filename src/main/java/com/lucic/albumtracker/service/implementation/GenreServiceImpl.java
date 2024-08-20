@@ -30,11 +30,6 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public List<GenreEntity> searchGenres(String query) {
-        return genreRepository.findByNameContainingIgnoreCase(query);
-    }
-
-    @Override
     public GenreEntity getGenreById(UUID id) {
         return genreRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Genre not found"));

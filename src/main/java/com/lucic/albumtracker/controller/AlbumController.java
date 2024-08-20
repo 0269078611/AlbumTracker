@@ -1,8 +1,6 @@
 package com.lucic.albumtracker.controller;
 
-
 import com.lucic.albumtracker.entity.AlbumEntity;
-import com.lucic.albumtracker.entity.GenreEntity;
 import com.lucic.albumtracker.service.AlbumService;
 import com.lucic.albumtracker.service.ArtistService;
 import com.lucic.albumtracker.service.GenreService;
@@ -12,8 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 @Controller
@@ -22,60 +18,57 @@ public class AlbumController {
     private final AlbumService albumService;
     private final GenreService genreService;
     private final ArtistService artistService;
-
-    @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("admin/albums")
     public String listAlbums(Model model) {
         Set<AlbumEntity> albums = albumService.getAllAlbums();
         model.addAttribute("albums", albums);
-        return "albums/list";
+        return "admin/albums/list";
     }
-
-    @GetMapping("albums/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("admin/albums/{id}")
     public String getAlbumById(@PathVariable UUID id, Model model) {
         AlbumEntity album = albumService.getAlbumById(id);
         model.addAttribute("album", album);
-        return "albums/detail";
+        return "admin/albums/details";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin/albums/add")
-    public String showCreateForm(Model model, @RequestParam(required = false) String genreQuery) {
+    public String createAlbumForm(Model model) {
         model.addAttribute("album", new AlbumEntity());
 
-
         model.addAttribute("genres", genreService.getAllGenres());
-
-
         model.addAttribute("artists", artistService.getAllArtists());
 
-        return "/admin/albums/addAlbum";
+        return "admin/albums/addAlbum";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     @PostMapping("/admin/albums/add")
     public String createAlbum(@ModelAttribute AlbumEntity albumEntity) {
         AlbumEntity savedAlbum = albumService.createAlbum(albumEntity);
         return "redirect:/admin/albums/" + savedAlbum.getId() + "/songs";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/albums/{albumId}/edit")
-    public String showEditForm(@PathVariable UUID id, Model model) {
-        AlbumEntity album = albumService.getAlbumById(id);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @GetMapping("/admin/albums/edit/{albumId}")
+    public String updateAlbumForm(@PathVariable UUID albumId, Model model) {
+        AlbumEntity album = albumService.getAlbumById(albumId);
         model.addAttribute("album", album);
         return "/admin/albums/editAlbum";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/admin/albums/{albumId}/edit")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("/admin/albums/edit/{albumId}")
     public String updateAlbum(@PathVariable UUID albumId, @ModelAttribute AlbumEntity albumEntity) {
         albumEntity.setId(albumId);
         albumService.updateAlbum(albumEntity);
         return "redirect:admin/albums";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("admin/albums/{albumId}/delete")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @PostMapping("admin/albums/delete/{albumId}")
     public String deleteAlbum(@PathVariable UUID albumId) {
         albumService.deleteAlbum(albumId);
         return "redirect:admin/albums";

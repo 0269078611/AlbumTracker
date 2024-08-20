@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Album Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .album-info {
+            margin-bottom: 30px;
+        }
+        .album-info h2 {
+            margin-top: 0;
+        }
+        .songs-list {
+            margin-top: 20px;
+        }
+        .songs-list h3 {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Album Details</h1>
+
+    <div class="album-info">
+        <h2 th:text="${album.title}"></h2>
+        <p><strong>Release Date:</strong> <span th:text="${(album.releaseDate)}"></span></p>
+        <p><strong>Description:</strong> <span th:text="${album.description}"></span></p>
+        <p><strong>Artists:</strong>
+            <span th:each="artist : ${album.artists}" th:text="${artist.name} + ' '"></span>
+        </p>
+    </div>
+
+    <div class="songs-list">
+        <h3>Songs in this Album</h3>
+        <table>
+            <thead>
+            <tr>
+                <th>Track Number</th>
+                <th>Title</th>
+                <th>Duration</th>
+                <th>Artists</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="song : ${album.songs}">
+                <td th:text="${song.trackNumber}"></td>
+                <td th:text="${song.title}"></td>
+                <td th:text="${song.duration}"></td>
+                <td>
+                    <span th:each="artist : ${song.artists}" th:text="${artist.name} + ' '"></span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+</html>

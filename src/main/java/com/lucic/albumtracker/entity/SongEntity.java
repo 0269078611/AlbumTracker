@@ -1,8 +1,10 @@
 package com.lucic.albumtracker.entity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,6 +24,7 @@ public class SongEntity {
 
     @ManyToOne
     @JoinColumn(name = "album_id", nullable = false)
+    @JsonIgnore
     private AlbumEntity album;
 
     @ManyToMany
@@ -30,6 +33,19 @@ public class SongEntity {
             joinColumns = @JoinColumn(name = "song_id"),
             inverseJoinColumns = @JoinColumn(name = "artist_id")
     )
+    @JsonIgnore
     private Set<ArtistEntity> artists = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SongEntity that = (SongEntity) o;
+        return Objects.equals(id, that.id);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
 }
