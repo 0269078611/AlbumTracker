@@ -18,11 +18,11 @@ public class SongController {
 
     private final SongService songService;
 
-    @GetMapping("/{songId}")
+    @GetMapping("songs/{songId}")
     public String getSongDetails(@PathVariable UUID songId, Model model) {
         SongEntity song = songService.getSongById(songId);
         model.addAttribute("song", song);
-        return "songs/song-detail";
+        return "songs/details";
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")

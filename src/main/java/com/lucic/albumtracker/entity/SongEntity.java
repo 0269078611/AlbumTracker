@@ -11,10 +11,13 @@ import java.util.UUID;
 public class SongEntity {
     @Id
     @GeneratedValue
+    @Column(name="song_id")
     private UUID id;
-
+    @Column(name="title")
     private String title;
+    @Column(name="trackNumber")
     private int trackNumber;
+    @Column(name="duration")
     private String duration;
 
     @ManyToOne

@@ -30,11 +30,11 @@ public class AlbumController {
         return "albums/list";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("albums/{id}")
     public String getAlbumById(@PathVariable UUID id, Model model) {
         AlbumEntity album = albumService.getAlbumById(id);
         model.addAttribute("album", album);
-        return "album/detail";
+        return "albums/detail";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
