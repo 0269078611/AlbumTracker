@@ -59,7 +59,7 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{id}/edit")
+    @GetMapping("/admin/albums/{albumId}/edit")
     public String showEditForm(@PathVariable UUID id, Model model) {
         AlbumEntity album = albumService.getAlbumById(id);
         model.addAttribute("album", album);
@@ -67,17 +67,17 @@ public class AlbumController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/edit")
-    public String updateAlbum(@PathVariable UUID id, @ModelAttribute AlbumEntity albumEntity) {
-        albumEntity.setId(id); // Ensure the ID is set for the update
+    @PostMapping("/admin/albums/{albumId}/edit")
+    public String updateAlbum(@PathVariable UUID albumId, @ModelAttribute AlbumEntity albumEntity) {
+        albumEntity.setId(albumId);
         albumService.updateAlbum(albumEntity);
-        return "redirect:/albums";
+        return "redirect:admin/albums";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/{id}/delete")
-    public String deleteAlbum(@PathVariable UUID id) {
-        albumService.deleteAlbum(id);
-        return "redirect:/albums";
+    @PostMapping("admin/albums/{albumId}/delete")
+    public String deleteAlbum(@PathVariable UUID albumId) {
+        albumService.deleteAlbum(albumId);
+        return "redirect:admin/albums";
     }
 }

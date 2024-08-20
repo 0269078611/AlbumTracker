@@ -61,7 +61,7 @@ public class SecurityConfiguration {
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
-                                .accessDeniedPage("/accessDenied")
+                                .accessDeniedPage("/error")
                 );
 
 
